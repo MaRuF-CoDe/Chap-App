@@ -14,17 +14,17 @@ const port = process.env.PORT || 3000
 
 app.use(express.static(path.join(__dirname, '../public')));
 
+let count = 0
 
-
-io.on('connection',()=>{
+io.on("connection", (socket)=>{
     console.log('New Websocket connection')
+    socket.emit('countUpdated',count)
+    socket.on('increment',()=>{
+        count++
+        io.emit('countUpdated',count)
+    })
 })
 
-
-
-// app.get('/',(req,res)=> {
-//     res.render('index.html')
-// })
 
 server.listen(port,() =>{
     console.log(`Server is up ${port}!`)
