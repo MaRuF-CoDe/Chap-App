@@ -18,10 +18,12 @@ app.use(express.static(path.join(__dirname, '../public')));
 io.on("connection", (socket)=>{
     console.log('New Websocket connection')
 
-    socket.emit('message',getMessage('Welcome!'))
+   socket.on('join',({username,room})=>{
+        socket.join(room)
 
-    socket.broadcast.emit('message',getMessage('A new user has joined!'))
-
+        socket.emit('message',getMessage('Welcome!'))
+        socket.broadcast.to(room).emit('message',getMessage(`${username} has joined!`))
+    })
     socket.on('sendMessage',(message,callback)=>{
         const filter = new Filter()
         if(filter.isProfane(message)){
