@@ -10,6 +10,7 @@ const $messages = document.querySelector('#messages')
 //Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#locationMessage-template').innerHTML
+const sidebarTemplate =document.querySelector('#side-bar-template').innerHTML
 
 //Options
 
@@ -33,6 +34,14 @@ socket.on('locationMessage',(message)=>{
         createdAt:moment(message.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend',html)
+})
+
+socket.on('roomData',({room,users})=>{
+    const html = Mustache.render(sidebarTemplate,{
+        room,
+        users
+    })
+    document.querySelector('#sidebar').innerHTML = html
 })
 
 $messageForm.addEventListener('submit',(e)=>{
