@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+const { getMessage } = require('./utils/messages')
 
 
 const app = express()
@@ -17,9 +18,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 io.on("connection", (socket)=>{
     console.log('New Websocket connection')
 
-    socket.emit('message','Welcome!')
+    socket.emit('message',getMessage('Welcome!'))
 
-    socket.broadcast.emit('message','A new user has joined!')
+    socket.broadcast.emit('message',getMessage('A new user has joined!'))
 
     socket.on('sendMessage',(message,callback)=>{
         const filter = new Filter()
@@ -27,7 +28,7 @@ io.on("connection", (socket)=>{
             return callback('Profanity not allowed!')
         }
 
-        io.emit('message',message)
+        io.emit('message',getMessage(message))
         callback()
     })
 
@@ -37,7 +38,7 @@ io.on("connection", (socket)=>{
     })
 
     socket.on('disconnect',()=>{
-        io.emit('message','A user has left!')
+        io.emit('message',getMessage('A user has left!'))
     })
 })
 
